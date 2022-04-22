@@ -5,8 +5,7 @@ applications:
     - route: identity-idva-keycloak-((ENVIRONMENT_NAME)).apps.internal
   instances: 1
   health-check-type: process
-  memory: 1.2G
-  disk_quota: 2G
+  memory: 1G
   command: ./install.sh && keycloak-$(cat KEYCLOAK_VERSION)/bin/kc.sh start --auto-build
   buildpacks:
     - binary_buildpack
