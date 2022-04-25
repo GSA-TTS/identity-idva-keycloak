@@ -6,7 +6,7 @@ applications:
   instances: 1
   health-check-type: process
   memory: 1G
-  command: ./install.sh && keycloak-$(cat KEYCLOAK_VERSION)/bin/kc.sh start --auto-build
+  command: keycloak-$(cat KEYCLOAK_VERSION)/bin/kc.sh start --auto-build
   buildpacks:
     - binary_buildpack
   services:
