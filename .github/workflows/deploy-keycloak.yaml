@@ -7,8 +7,8 @@ on:
       - main
     tags:
       - '*'
-    paths:
-      - '!**.md'  # Ignore all markdown files in the repository
+    paths-ignore:
+      - '**.md'  # Ignore all markdown files in the repository
   release:
     types: [released]
 
@@ -29,9 +29,16 @@ jobs:
       - name: Install Keycloak
         run: ./install.sh
 
+      - name: Set env dependant secret name
+        run: |
+          target_env_upper=${{ steps.cf-setup.outputs.target-environment-upper }}
+          echo "KEYCLOAK_ADMIN_PASSWORD_NAME=KEYCLOAK_ADMIN_PASSWORD_$target_env_upper" >> $GITHUB_ENV
+
       - name: Deploy Keycloak
+        env:
+          KEYCLOAK_ADMIN_PASSWORD: ${{ secrets[env.KEYCLOAK_ADMIN_PASSWORD_NAME] }}
         run: cf push
           --var ENVIRONMENT_NAME=${{ steps.cf-setup.outputs.target-environment }}
           --var KEYCLOAK_ADMIN=${{ secrets.KEYCLOAK_ADMIN }}
-          --var KEYCLOAK_ADMIN_PASSWORD=${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+          --var KEYCLOAK_ADMIN_PASSWORD=${{ env.KEYCLOAK_ADMIN_PASSWORD }}
           --strategy rolling
